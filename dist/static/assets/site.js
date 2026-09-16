@@ -26,6 +26,30 @@
   });
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const welcomeOverlay = document.querySelector('[data-welcome-overlay]');
+  const welcomeDismiss = document.querySelector('[data-welcome-dismiss]');
+  if (welcomeOverlay && welcomeDismiss) {
+    let hasVisited = false;
+    try { hasVisited = sessionStorage.getItem('techcommons-welcomed') === 'true'; } catch {}
+    if (!hasVisited) {
+      welcomeOverlay.hidden = false;
+      window.requestAnimationFrame(() => {
+        welcomeOverlay.classList.add('is-open');
+        welcomeDismiss.focus();
+      });
+      const dismissWelcome = () => {
+        welcomeOverlay.classList.remove('is-open');
+        try { sessionStorage.setItem('techcommons-welcomed', 'true'); } catch {}
+        window.setTimeout(() => { welcomeOverlay.hidden = true; }, reducedMotion.matches ? 0 : 420);
+      };
+      welcomeDismiss.addEventListener('click', dismissWelcome, { once: true });
+      welcomeOverlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') dismissWelcome();
+      });
+    }
+  }
+
   const phrase = document.querySelector('[data-hero-phrase]');
   if (phrase && !phrase.dataset.animationReady) {
     phrase.dataset.animationReady = 'true';
