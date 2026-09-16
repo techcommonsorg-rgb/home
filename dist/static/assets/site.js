@@ -122,15 +122,27 @@
     window.addEventListener('pagehide', cleanUpGlow, { once: true });
   }
 
-  document.querySelectorAll('[data-map-load]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const shell = button.closest('[data-map-shell]');
-      const iframe = document.createElement('iframe');
-      iframe.title = 'Map showing the proposed Dougherty Community Centre venue in Chatswood';
-      iframe.loading = 'lazy';
-      iframe.referrerPolicy = 'no-referrer-when-downgrade';
-      iframe.src = 'https://www.google.com/maps?q=Dougherty%20Community%20Centre%2C%207%20Victor%20Street%2C%20Chatswood%20NSW%202067&output=embed';
-      shell.querySelector('.map-placeholder').replaceWith(iframe);
-    }, { once: true });
-  });
+  if (!reducedMotion.matches && 'IntersectionObserver' in window) {
+    const revealGroups = document.querySelectorAll('.program-grid, .detail-grid, .format-grid, .principle-grid, .stat-grid, .community-actions, .magazine-details, .footer-grid');
+    const revealItems = document.querySelectorAll('.section-heading, .section > .shell:not(.program-grid), .program-card, .detail-card, .format-card, .principle-card, .stat-grid > div, .community-link, .winner-card, .action-panel, .footer-grid > div');
+
+    revealGroups.forEach((group) => {
+      Array.from(group.children).forEach((item, index) => {
+        item.style.setProperty('--reveal-delay', `${Math.min(index, 5) * 90}ms`);
+      });
+    });
+    revealItems.forEach((item) => item.classList.add('reveal-item'));
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' });
+
+    revealItems.forEach((item) => revealObserver.observe(item));
+    window.requestAnimationFrame(() => document.documentElement.classList.add('motion-ready'));
+  }
+
 })();

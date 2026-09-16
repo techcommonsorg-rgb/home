@@ -5,7 +5,7 @@ const dist = join(root, 'dist');
 const staticDir = join(dist, 'static');
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(staticDir, { recursive: true });
-for (const entry of ['index.html','404.html','favicon.ico','robots.txt','sitemap.xml','.nojekyll','assets','programs','hackathon','about','get-involved','contact','safeguarding','privacy','accessibility']) {
+for (const entry of ['index.html','404.html','favicon.ico','robots.txt','sitemap.xml','.nojekyll','assets','programs','hackathon','magazine','about','get-involved','contact','safeguarding','privacy','accessibility']) {
   const source = join(root, entry);
   if (!existsSync(source)) throw new Error(`Missing build input: ${entry}`);
   cpSync(source, join(staticDir, entry), { recursive: true });
