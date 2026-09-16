@@ -73,3 +73,7 @@
 .welcome-overlay{display:flex;align-items:center;justify-content:center;width:100vw;height:100dvh;margin:0}.welcome-dialog{flex:0 1 650px;width:calc(100vw - 48px);margin:0 auto;transform-origin:center}
 @keyframes welcome-word-in{to{opacity:1;filter:blur(0);transform:none}}@keyframes welcome-detail-in{to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.welcome-word,.welcome-dialog>p:not(.eyebrow),.welcome-dialog .welcome-button{opacity:1;filter:none;transform:none;animation:none!important}}
+
+/* Optical centring adjustment. */
+.welcome-dialog{left:-42px}
+@media(max-width:620px){.welcome-dialog{left:-12px}}
