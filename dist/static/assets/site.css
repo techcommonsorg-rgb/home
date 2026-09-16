@@ -65,3 +65,10 @@
 @media(max-width:920px){.hero{min-height:auto}.hero-layout{grid-template-columns:1fr}.hero-panel{max-width:none}.hero-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.hero-facts>div{display:block}.hero-facts dd{text-align:left;margin-top:4px}}
 @media(max-width:620px){.welcome-dialog{border-radius:20px}.welcome-button{width:100%}.hero-facts{grid-template-columns:1fr}.coming-soon-group{gap:2rem;padding-inline:1rem}.coming-soon-group span::after{margin-left:2rem}}
 @media(prefers-reduced-motion:reduce){.welcome-overlay,.welcome-dialog{transition:none}.coming-soon-track{animation:none}}
+
+/* Clean welcome surface. */
+.welcome-dialog{border-color:rgba(255,255,255,.14);background:linear-gradient(145deg,#0b132b,#121e42);transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .45s ease}
+.welcome-dialog::before,.welcome-dialog::after{content:none}
+.welcome-dialog{text-align:center}.welcome-dialog .eyebrow,.welcome-dialog>p:not(.eyebrow){margin-left:auto;margin-right:auto}.welcome-dialog .welcome-button{margin-left:auto;margin-right:auto}.welcome-word{display:inline-block;opacity:0;filter:blur(8px);transform:translateY(22px)}.welcome-overlay.is-open .welcome-word{animation:welcome-word-in .7s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--word-delay)}.welcome-dialog>p:not(.eyebrow),.welcome-dialog .welcome-button{opacity:0;transform:translateY(14px)}.welcome-overlay.is-open .welcome-dialog>p:not(.eyebrow){animation:welcome-detail-in .6s .52s ease forwards}.welcome-overlay.is-open .welcome-dialog .welcome-button{animation:welcome-detail-in .6s .66s ease forwards}
+@keyframes welcome-word-in{to{opacity:1;filter:blur(0);transform:none}}@keyframes welcome-detail-in{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.welcome-word,.welcome-dialog>p:not(.eyebrow),.welcome-dialog .welcome-button{opacity:1;filter:none;transform:none;animation:none!important}}
