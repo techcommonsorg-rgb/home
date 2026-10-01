@@ -125,7 +125,7 @@
 
   if (!reducedMotion.matches && 'IntersectionObserver' in window) {
     const revealGroups = document.querySelectorAll('.program-grid, .detail-grid, .format-grid, .principle-grid, .stat-grid, .community-actions, .magazine-details, .footer-grid');
-    const revealItems = document.querySelectorAll('.section-heading, .section > .shell:not(.program-grid), .program-card, .detail-card, .format-card, .principle-card, .stat-grid > div, .community-link, .winner-card, .action-panel, .footer-grid > div');
+    const revealItems = document.querySelectorAll('.section-heading, .section > .shell:not(.program-grid):not(.edition-archive), .program-card, .detail-card, .format-card, .principle-card, .stat-grid > div, .community-link, .winner-card, .action-panel, .footer-grid > div');
 
     revealGroups.forEach((group) => {
       Array.from(group.children).forEach((item, index) => {
