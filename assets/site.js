@@ -150,9 +150,9 @@
       const colours = ['#88d8ff', '#ffd166', '#d62278', '#2456e6', '#f08abc'];
       const particles = Array.from({ length: 160 }, (_, index) => ({
         x: Math.random() * width,
-        y: -Math.random() * height * .8,
+        y: -Math.random() * 60,
         vx: (Math.random() - .5) * 100,
-        vy: 60 + Math.random() * 100,
+        vy: 150 + Math.random() * 100,
         spin: (Math.random() - .5) * 12,
         angle: Math.random() * Math.PI,
         size: 8 + Math.random() * 7,
@@ -191,7 +191,7 @@
       const visible = entries.some((entry) => entry.isIntersecting);
       if (visible && !wasVisible) celebrate();
       wasVisible = visible;
-    }, { threshold: .1 });
+    }, { threshold: 0, rootMargin: '0px 0px 120px 0px' });
     winnerObserver.observe(winningProject);
     window.addEventListener('pagehide', () => {
       winnerObserver.disconnect();
