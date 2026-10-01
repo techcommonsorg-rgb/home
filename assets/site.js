@@ -123,7 +123,7 @@
     window.addEventListener('pagehide', cleanUpGlow, { once: true });
   }
 
-  const winningProject = document.querySelector('.award-card, .winner-card');
+  const winningProject = document.querySelector('#winners .section-heading, .winner-card');
   if (winningProject && !reducedMotion.matches && 'IntersectionObserver' in window) {
     let frame = 0;
     let canvas;
@@ -134,6 +134,7 @@
     };
     const celebrate = () => {
       if (reducedMotion.matches) return;
+      clearConfetti();
       canvas = document.createElement('canvas');
       canvas.className = 'winner-confetti';
       canvas.setAttribute('aria-hidden', 'true');
@@ -147,14 +148,14 @@
       canvas.height = height * ratio;
       context.scale(ratio, ratio);
       const colours = ['#88d8ff', '#ffd166', '#d62278', '#2456e6', '#f08abc'];
-      const particles = Array.from({ length: 100 }, (_, index) => ({
-        x: index % 2 ? width * .12 : width * .88,
-        y: height * .62,
-        vx: (index % 2 ? 1 : -1) * (100 + Math.random() * 350),
-        vy: -380 - Math.random() * 420,
+      const particles = Array.from({ length: 160 }, (_, index) => ({
+        x: Math.random() * width,
+        y: -Math.random() * height * .8,
+        vx: (Math.random() - .5) * 100,
+        vy: 60 + Math.random() * 100,
         spin: (Math.random() - .5) * 12,
         angle: Math.random() * Math.PI,
-        size: 5 + Math.random() * 6,
+        size: 8 + Math.random() * 7,
         colour: colours[index % colours.length]
       }));
       let start;
@@ -167,11 +168,11 @@
         const step = Math.min((now - previous) / 1000, .04);
         previous = now;
         context.clearRect(0, 0, width, height);
-        context.globalAlpha = Math.min(1, Math.max(0, (3.2 - elapsed) / .8));
+        context.globalAlpha = Math.min(1, Math.max(0, (5 - elapsed) / 1.2));
         particles.forEach((particle) => {
           particle.x += particle.vx * step;
           particle.y += particle.vy * step;
-          particle.vy += 650 * step;
+          particle.vy += 100 * step;
           particle.angle += particle.spin * step;
           context.save();
           context.translate(particle.x, particle.y);
@@ -180,16 +181,17 @@
           context.fillRect(-particle.size / 2, -particle.size / 4, particle.size, particle.size / 2);
           context.restore();
         });
-        if (elapsed < 3.2) frame = window.requestAnimationFrame(paint);
+        if (elapsed < 5) frame = window.requestAnimationFrame(paint);
         else clearConfetti();
       };
       frame = window.requestAnimationFrame(paint);
     };
+    let wasVisible = false;
     const winnerObserver = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      winnerObserver.disconnect();
-      celebrate();
-    }, { threshold: .15 });
+      const visible = entries.some((entry) => entry.isIntersecting);
+      if (visible && !wasVisible) celebrate();
+      wasVisible = visible;
+    }, { threshold: .1 });
     winnerObserver.observe(winningProject);
     window.addEventListener('pagehide', () => {
       winnerObserver.disconnect();
