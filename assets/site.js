@@ -123,6 +123,80 @@
     window.addEventListener('pagehide', cleanUpGlow, { once: true });
   }
 
+  const winningProject = document.querySelector('.award-card, .winner-card');
+  if (winningProject && !reducedMotion.matches && 'IntersectionObserver' in window) {
+    let frame = 0;
+    let canvas;
+    const clearConfetti = () => {
+      window.cancelAnimationFrame(frame);
+      canvas?.remove();
+      canvas = undefined;
+    };
+    const celebrate = () => {
+      if (reducedMotion.matches) return;
+      canvas = document.createElement('canvas');
+      canvas.className = 'winner-confetti';
+      canvas.setAttribute('aria-hidden', 'true');
+      document.body.append(canvas);
+      const context = canvas.getContext('2d');
+      if (!context) { clearConfetti(); return; }
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      context.scale(ratio, ratio);
+      const colours = ['#88d8ff', '#ffd166', '#d62278', '#2456e6', '#f08abc'];
+      const particles = Array.from({ length: 100 }, (_, index) => ({
+        x: index % 2 ? width * .12 : width * .88,
+        y: height * .62,
+        vx: (index % 2 ? 1 : -1) * (100 + Math.random() * 350),
+        vy: -380 - Math.random() * 420,
+        spin: (Math.random() - .5) * 12,
+        angle: Math.random() * Math.PI,
+        size: 5 + Math.random() * 6,
+        colour: colours[index % colours.length]
+      }));
+      let start;
+      let previous;
+      const paint = (now) => {
+        if (reducedMotion.matches) { clearConfetti(); return; }
+        start ??= now;
+        previous ??= now;
+        const elapsed = (now - start) / 1000;
+        const step = Math.min((now - previous) / 1000, .04);
+        previous = now;
+        context.clearRect(0, 0, width, height);
+        context.globalAlpha = Math.min(1, Math.max(0, (3.2 - elapsed) / .8));
+        particles.forEach((particle) => {
+          particle.x += particle.vx * step;
+          particle.y += particle.vy * step;
+          particle.vy += 650 * step;
+          particle.angle += particle.spin * step;
+          context.save();
+          context.translate(particle.x, particle.y);
+          context.rotate(particle.angle);
+          context.fillStyle = particle.colour;
+          context.fillRect(-particle.size / 2, -particle.size / 4, particle.size, particle.size / 2);
+          context.restore();
+        });
+        if (elapsed < 3.2) frame = window.requestAnimationFrame(paint);
+        else clearConfetti();
+      };
+      frame = window.requestAnimationFrame(paint);
+    };
+    const winnerObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      winnerObserver.disconnect();
+      celebrate();
+    }, { threshold: .15 });
+    winnerObserver.observe(winningProject);
+    window.addEventListener('pagehide', () => {
+      winnerObserver.disconnect();
+      clearConfetti();
+    }, { once: true });
+  }
+
   if (!reducedMotion.matches && 'IntersectionObserver' in window) {
     const revealGroups = document.querySelectorAll('.program-grid, .detail-grid, .format-grid, .principle-grid, .stat-grid, .community-actions, .magazine-details, .footer-grid');
     const revealItems = document.querySelectorAll('.section-heading, .section > .shell:not(.program-grid):not(.edition-archive), .program-card, .detail-card, .format-card, .principle-card, .stat-grid > div, .community-link, .winner-card, .action-panel, .footer-grid > div');
